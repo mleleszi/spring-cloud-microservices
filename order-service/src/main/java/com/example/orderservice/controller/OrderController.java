@@ -7,6 +7,7 @@ import com.example.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,10 @@ public class OrderController {
     @PostMapping
     public String placeOrder(@RequestBody OrderDto orderDto) {
         boolean allProductsInStock = orderDto.getOrderLineItemsList().stream()
-                .allMatch(orderLineItems -> inventoryClient.checkStock(orderLineItems.getSkuCode()));
+                .allMatch(lineItem -> {
+                    log.info("making a call to inventory service for skuCode {}", lineItem.getSkuCode());
+                    return inventoryClient.checkStock(lineItem.getSkuCode());
+                });
 
         if (allProductsInStock) {
             Order order = new Order();
@@ -37,8 +41,8 @@ public class OrderController {
 
             orderRepository.save(order);
 
-            log.info("sender order details to notification service");
-            streamBridge.send("notificationEventSupplier-out-0", order.getId());
+            log.info("sender order details with order id {} to notification service", order.getId());
+            streamBridge.send("notificationEventSupplier-out-0", MessageBuilder.withPayload(order.getId()).build());
 
             return "Order placed succesfully";
         }
