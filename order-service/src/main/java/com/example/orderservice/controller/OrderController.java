@@ -6,6 +6,7 @@ import com.example.orderservice.model.Order;
 import com.example.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ public class OrderController {
 
     private final OrderRepository orderRepository;
     private final InventoryClient inventoryClient;
+    private final StreamBridge streamBridge;
 
 
     @PostMapping
@@ -34,6 +36,9 @@ public class OrderController {
             order.setOrderNumber(UUID.randomUUID().toString());
 
             orderRepository.save(order);
+
+            log.info("sender order details to notification service");
+            streamBridge.send("notificationEventSupplier-out-0", order.getId());
 
             return "Order placed succesfully";
         }
