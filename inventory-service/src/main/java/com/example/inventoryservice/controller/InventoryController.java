@@ -2,6 +2,7 @@ package com.example.inventoryservice.controller;
 
 import com.example.inventoryservice.model.Inventory;
 import com.example.inventoryservice.repository.InventoryRepository;
+import com.example.inventoryservice.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,13 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class InventoryController {
 
-    private final InventoryRepository inventoryRepository;
+    private final InventoryService inventoryService;
 
     @GetMapping("/{skuCode}")
     Boolean isInStock(@PathVariable String skuCode) {
-        log.info("checking sotck for product with skuCode {}", skuCode);
-        Inventory inventory = inventoryRepository.findBySkuCode(skuCode)
-                .orElseThrow(() -> new RuntimeException("Cannot find product by sku code: " + skuCode));
-        return inventory.getStock() > 0;
+      return inventoryService.isInStock(skuCode);
     }
 }

@@ -4,6 +4,7 @@ import com.example.orderservice.client.InventoryClient;
 import com.example.orderservice.dto.OrderDto;
 import com.example.orderservice.model.Order;
 import com.example.orderservice.repository.OrderRepository;
+import com.example.orderservice.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
@@ -21,33 +22,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderRepository orderRepository;
-    private final InventoryClient inventoryClient;
-    private final StreamBridge streamBridge;
-
+    private final OrderService orderService;
 
     @PostMapping
     public String placeOrder(@RequestBody OrderDto orderDto) {
-        boolean allProductsInStock = orderDto.getOrderLineItemsList().stream()
-                .allMatch(lineItem -> {
-                    log.info("making a call to inventory service for skuCode {}", lineItem.getSkuCode());
-                    return inventoryClient.checkStock(lineItem.getSkuCode());
-                });
-
-        if (allProductsInStock) {
-            Order order = new Order();
-            order.setOrderLineItems(orderDto.getOrderLineItemsList());
-            order.setOrderNumber(UUID.randomUUID().toString());
-
-            orderRepository.save(order);
-
-            log.info("sender order details with order id {} to notification service", order.getId());
-            streamBridge.send("notificationEventSupplier-out-0", MessageBuilder.withPayload(order.getId()).build());
-
-            return "Order placed succesfully";
-        }
-
-        return "Order failed, one of the products is not in stock";
-
+       return orderService.placeOrder(orderDto);
     }
 }
