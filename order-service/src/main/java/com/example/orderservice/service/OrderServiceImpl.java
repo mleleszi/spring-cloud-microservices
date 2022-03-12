@@ -2,6 +2,7 @@ package com.example.orderservice.service;
 
 import com.example.orderservice.client.InventoryClient;
 import com.example.orderservice.dto.OrderDto;
+import com.example.orderservice.dto.OrderResponseDto;
 import com.example.orderservice.model.Order;
 import com.example.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,9 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +43,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private boolean allProductsInStock(OrderDto orderDto) {
-        return orderDto.getOrderLineItemsList().stream()
+        return orderDto
+                .getOrderLineItemsList()
+                .stream()
                 .allMatch(lineItem -> {
                     log.info("making a call to inventory service for skuCode {}", lineItem.getSkuCode());
                     return inventoryClient.checkStock(lineItem.getSkuCode());
                 });
+    }
+
+    @Override
+    public List<OrderResponseDto> findAll() {
+        return orderRepository
+                .findAll()
+                .stream()
+                .map(OrderResponseDto::new)
+                .collect(Collectors.toList());
     }
 }
