@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping("api/load-xml")
 @RequiredArgsConstructor
@@ -22,6 +21,5 @@ public class BatchController {
         jobExecutorService.executeJob(job);
         return ResponseEntity.ok("Batch Job started");
     }
-
 
 }
