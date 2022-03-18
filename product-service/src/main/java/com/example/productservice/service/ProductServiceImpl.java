@@ -3,6 +3,7 @@ package com.example.productservice.service;
 import com.example.productservice.repository.ProductEntity;
 import com.example.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -30,9 +31,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDto> findAll() {
+    public List<ProductDto> findAll(int page, int size) {
          return productRepository
-                    .findAll()
+                    .findAll(PageRequest.of(page, size))
                     .stream()
                     .map(ProductDto::new)
                     .collect(Collectors.toList());

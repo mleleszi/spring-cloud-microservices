@@ -5,5 +5,5 @@ import java.util.List;
 public interface ProductService {
     ProductDto save(ProductDto productDto);
     ProductDto findById(Long id);
-    List<ProductDto> findAll();
+    List<ProductDto> findAll(int page, int size);
 }

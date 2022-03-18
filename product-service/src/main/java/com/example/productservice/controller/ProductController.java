@@ -19,9 +19,9 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public List<ProductResponseModel> getAllProducts() {
+    public List<ProductResponseModel> getAllProducts(@RequestParam int page, @RequestParam int size) {
        return productService
-               .findAll()
+               .findAll(page, size)
                .stream()
                .map(ProductResponseModel::new)
                .collect(Collectors.toList());
