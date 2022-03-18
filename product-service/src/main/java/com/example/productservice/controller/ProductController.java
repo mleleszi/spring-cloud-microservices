@@ -32,4 +32,10 @@ public class ProductController {
     public ProductResponseModel createProduct(@RequestBody CreateProductModel product) {
         return new ProductResponseModel(productService.save(product.toProductDto()));
     }
+
+    @GetMapping("/{id}")
+    public ProductResponseModel getProductById(@PathVariable Long id) {
+        return new ProductResponseModel(productService.findById(id));
+    }
+
 }
