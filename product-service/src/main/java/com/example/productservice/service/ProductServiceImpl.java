@@ -3,6 +3,7 @@ package com.example.productservice.service;
 import com.example.productservice.repository.ProductEntity;
 import com.example.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,17 +13,20 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
     @Override
     public ProductDto save(ProductDto productDto) {
+        log.info("ProductService - save");
         return new ProductDto(productRepository.save(productDto.toEntity()));
     }
 
     @Override
     public ProductDto findById(Long id) {
+        log.info("ProductService - findById");
         return new ProductDto(
                 productRepository
                         .findById(id)
@@ -32,6 +36,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> findAll(int page, int size) {
+        log.info("ProductService - findAll");
          return productRepository
                     .findAll(PageRequest.of(page, size))
                     .stream()
