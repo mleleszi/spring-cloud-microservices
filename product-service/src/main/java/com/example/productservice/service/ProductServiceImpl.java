@@ -5,6 +5,7 @@ import com.example.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,4 +46,24 @@ public class ProductServiceImpl implements ProductService {
                     .map(ProductDto::new)
                     .collect(Collectors.toList());
     }
+
+    @Override
+    public ProductDto update(ProductDto productDto) {
+        if (productRepository.findById(productDto.getId()).isEmpty())
+            throw new NoSuchProductException(productDto.getId());
+        else
+            return new ProductDto(productRepository.save(productDto.toEntity()));
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        try {
+            productRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new NoSuchProductException(id);
+        }
+
+    }
+
+
 }

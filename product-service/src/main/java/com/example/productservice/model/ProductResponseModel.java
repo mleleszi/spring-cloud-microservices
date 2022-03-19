@@ -31,7 +31,7 @@ public class ProductResponseModel {
     private BigDecimal price;
 
     public ProductDto toProductDto() {
-        return new ProductDto(null, name, description, price);
+        return new ProductDto(id, name, description, price);
     }
 
     public ProductResponseModel(ProductDto productDto) {

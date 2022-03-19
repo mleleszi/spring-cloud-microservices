@@ -38,4 +38,14 @@ public class ProductController {
         return new ProductResponseModel(productService.findById(id));
     }
 
+    @PutMapping
+    public ProductResponseModel update(@RequestBody ProductResponseModel productResponseModel) {
+        return new ProductResponseModel(productService.update(productResponseModel.toProductDto()));
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        productService.deleteById(id);
+    }
+
 }
