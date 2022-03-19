@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDto> findAll(int page, int size) {
         log.info("ProductService - findAll");
         return productRepository
-                    .findAll(PageRequest.of(page, size))
+                    .findAllBy(PageRequest.of(page, size))
                     .stream()
                     .map(ProductDto::new)
                     .collect(Collectors.toList());
