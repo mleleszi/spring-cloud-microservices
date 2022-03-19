@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> findAll(int page, int size) {
         log.info("ProductService - findAll");
-         return productRepository
+        return productRepository
                     .findAll(PageRequest.of(page, size))
                     .stream()
                     .map(ProductDto::new)
