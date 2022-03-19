@@ -4,6 +4,7 @@ import com.example.productservice.repository.ProductEntity;
 import com.example.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Cacheable("products")
     public List<ProductDto> findAll(int page, int size) {
         log.info("ProductService - findAll");
         return productRepository
