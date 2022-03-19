@@ -10,4 +10,5 @@ public interface OrderService {
     String placeOrder(OrderDto orderDto);
 
     List<OrderResponseDto> findAll();
+    OrderResponseDto findById(Long id);
 }

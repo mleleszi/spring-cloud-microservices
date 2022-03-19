@@ -55,10 +55,22 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderResponseDto> findAll() {
+        log.info("OrderService - findAll");
         return orderRepository
                 .findAll()
                 .stream()
                 .map(OrderResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public OrderResponseDto findById(Long id) {
+        log.info("OrderService - findById");
+        return new OrderResponseDto(
+                orderRepository
+                    .findById(id)
+                    .orElseThrow(() -> new RuntimeException("cannot find order with id: " + id))
+        );
+
     }
 }
